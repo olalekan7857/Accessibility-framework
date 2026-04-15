@@ -1,0 +1,120 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<!-- Missing lang attribute (violation #12) -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A11y Framework | Accessibility Testing Demo</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- No skip link (#7) -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="logo">
+        <i class="fas fa-universal-access"></i>
+        <span class="logo-text">A11yCore</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero section with subtle contrast & heading order issues -->
+    <section class="hero">
+      <h3 class="hero-eyebrow"><i class="fas fa-bolt"></i> lightning fast</h3>
+      <h2 class="hero-title">Build accessible<br>experiences faster</h2>
+      <p class="hero-description">
+        A modern platform for teams that care about inclusion. 
+        The text here has slightly reduced contrast and tighter than ideal spacing.
+      </p>
+      <!-- Div acting as button without role (#9) -->
+      <div class="hero-cta" onclick="alert('Get started')" tabindex="6">
+        <i class="fas fa-arrow-right"></i> Get Started
+      </div>
+    </section>
+
+    <!-- Image section: missing alt (#10) -->
+    <section class="image-showcase">
+      <h2 class="section-title"><i class="fas fa-image"></i> Featured work</h2>
+      <div class="image-grid">
+        <div class="image-card">
+          <img src="https://picsum.photos/400/250?random=101" class="showcase-img">
+          <p class="image-caption">Project Alpha</p>
+        </div>
+        <div class="image-card">
+          <img src="https://picsum.photos/400/250?random=102" class="showcase-img">
+          <p class="image-caption">Dashboard redesign</p>
+        </div>
+        <div class="image-card">
+          <img src="https://picsum.photos/400/250?random=103" class="showcase-img">
+          <p class="image-caption">Mobile interface</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form: missing labels (#11), visual-only errors (#13) -->
+    <section class="form-section">
+      <h2 class="section-title"><i class="fas fa-paper-plane"></i> Stay updated</h2>
+      <form id="newsletterForm" class="newsletter-form">
+        <div class="input-group">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="name" class="form-control" placeholder="Full name" tabindex="7">
+        </div>
+        <div class="input-group">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="email" class="form-control" placeholder="Email address" tabindex="8">
+        </div>
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="consent" tabindex="9">
+          <span class="checkbox-label">I agree to receive updates</span>
+        </div>
+        <div id="formErrorDisplay" class="error-message"></div>
+        <!-- Real button with outline removed (#6) -->
+        <button type="submit" class="submit-btn" tabindex="10"><i class="fas fa-check"></i> Subscribe</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <i class="fas fa-universal-access"></i> A11yCore
+      </div>
+      <nav class="footer-nav">
+        <a href="#" tabindex="12"><i class="fab fa-twitter"></i></a>
+        <a href="#" tabindex="11"><i class="fab fa-github"></i></a>
+        <a href="#" tabindex="13"><i class="fas fa-shield-alt"></i> Privacy</a>
+      </nav>
+      <p class="copyright">© 2026 A11yCore. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Floating Report Panel -->
+  <div id="reportPanel" class="report-panel">
+    <div class="panel-header">
+      <h3><i class="fas fa-clipboard-list"></i> Accessibility Report</h3>
+      <button id="closeReportBtn" class="close-btn" aria-label="Close report"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" id="reportContent">
+      <p class="placeholder-text"><i class="fas fa-info-circle"></i> Click "Enable Framework" to run analysis.</p>
+    </div>
+  </div>
+
+  <!-- Fixed Enable Button -->
+  <button id="enableFrameworkBtn" class="framework-fab">
+    <i class="fas fa-play"></i> Enable Framework
+  </button>
+
+  <!-- Reopen button when panel is closed -->
+  <button id="reopenReportBtn" class="reopen-btn hidden">
+    <i class="fas fa-flag"></i> Show Report
+  </button>
+
+  <script src="app.js"></script>
+</body>
+</html>
