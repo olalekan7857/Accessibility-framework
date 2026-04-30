@@ -320,3 +320,139 @@ export function generateFallbackAlt(element) {
 
 	return friendlyName.length > 0 ? friendlyName : "Image";
 }
+
+export function getAllFormControls(root = globalThis.document) {
+	if (!root?.querySelectorAll) {
+		return [];
+	}
+
+	return Array.from(
+		root.querySelectorAll("input:not([type='hidden']), textarea, select")
+	);
+}
+
+export function hasExplicitLabel(element) {
+	if (!element || typeof element.getAttribute !== "function") {
+		return false;
+	}
+
+	const id = String(element.getAttribute("id") ?? "").trim();
+	if (!id) {
+		return false;
+	}
+
+	const documentNode = element.ownerDocument ?? globalThis.document;
+	if (!documentNode?.querySelector) {
+		return false;
+	}
+
+	const matchingLabel = documentNode.querySelector(`label[for="${id}"]`);
+	return Boolean(matchingLabel);
+}
+
+export function hasWrappedLabel(element) {
+	if (!element || typeof element.closest !== "function") {
+		return false;
+	}
+
+	return Boolean(element.closest("label"));
+}
+
+export function hasAriaLabel(element) {
+	if (!element || typeof element.getAttribute !== "function") {
+		return false;
+	}
+
+	const ariaLabel = element.getAttribute("aria-label");
+	return typeof ariaLabel === "string" && ariaLabel.trim() !== "";
+}
+
+export function hasAriaLabelledBy(element) {
+	if (!element || typeof element.getAttribute !== "function") {
+		return false;
+	}
+
+	const ariaLabelledBy = element.getAttribute("aria-labelledby");
+	if (typeof ariaLabelledBy !== "string" || ariaLabelledBy.trim() === "") {
+		return false;
+	}
+
+	const documentNode = element.ownerDocument ?? globalThis.document;
+	if (!documentNode?.getElementById) {
+		return false;
+	}
+
+	const labelIds = ariaLabelledBy
+		.trim()
+		.split(/\s+/)
+		.filter(Boolean);
+
+	return labelIds.some((labelId) => {
+		const referencedElement = documentNode.getElementById(labelId);
+		const referencedText = String(referencedElement?.textContent ?? "").trim();
+		return Boolean(referencedElement) && referencedText !== "";
+	});
+}
+
+export function hasAccessibleLabel(element) {
+	return (
+		hasExplicitLabel(element) ||
+		hasWrappedLabel(element) ||
+		hasAriaLabel(element) ||
+		hasAriaLabelledBy(element)
+	);
+}
+
+export function generateFallbackLabel(element) {
+	if (!element || typeof element.getAttribute !== "function") {
+		return "Input field";
+	}
+
+	const placeholder = String(element.getAttribute("placeholder") ?? "").trim();
+	if (placeholder) {
+		return placeholder;
+	}
+
+	const name = String(element.getAttribute("name") ?? "")
+		.replace(/[-_]/g, " ")
+		.replace(/\s+/g, " ")
+		.trim();
+	if (name) {
+		return name;
+	}
+
+	// Try to find visible sibling text (for checkboxes, radios, etc.)
+	if (typeof element.parentNode !== "undefined" && element.parentNode) {
+		const parent = element.parentNode;
+
+		// Look for text in siblings
+		if (typeof parent.childNodes !== "undefined") {
+			for (let i = 0; i < parent.childNodes.length; i++) {
+				const node = parent.childNodes[i];
+
+				// Text node
+				if (node.nodeType === 3) {
+					const text = String(node.textContent ?? "").trim();
+					if (text && text.length > 2) {
+						return text;
+					}
+				}
+
+				// Element node (e.g., span, label-like text)
+				if (node.nodeType === 1 && node !== element) {
+					const tagName = String(node.tagName ?? "").toLowerCase();
+					// Ignore icons and structural elements
+					if (tagName === "i" || tagName === "svg" || tagName === "br") {
+						continue;
+					}
+					const text = String(node.textContent ?? "").trim();
+					if (text && text.length > 2) {
+						return text;
+					}
+				}
+			}
+		}
+	}
+
+	return "Input field";
+}

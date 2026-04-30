@@ -133,21 +133,6 @@ export function createReportLogger({ mode } = {}) {
 				console.groupEnd();
 			});
 
-			// Summary table
-			console.table(
-				entries.map((entry) => {
-					const displayAction =
-						entry.elementsAffected === 0 ? "no issues" : entry.action;
-					return {
-						algorithm: entry.algorithm,
-						severity: getSeverityLabel(entry),
-						bucket: entry.bucket,
-						action: displayAction,
-						mode: entry.mode ?? mode,
-						elementsAffected: entry.elementsAffected,
-					};
-				})
-			);
 			console.groupEnd();
 		},
 
