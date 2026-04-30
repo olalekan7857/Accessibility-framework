@@ -1,3 +1,6 @@
+  // Optional debug mode
+  const DEBUG = false;
+
 // demo/app.js — thin demo bridge to the real framework
 
 (function() {
@@ -136,5 +139,7 @@
   if (reopenBtn) reopenBtn.addEventListener('click', openPanel);
 
   resetReportPanel();
-  console.log('A11y Framework Demo — now connected to the real framework.');
+  if (DEBUG) {
+    console.log('A11y Framework Demo — now connected to the real framework.');
+  }
 })();

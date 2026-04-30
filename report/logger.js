@@ -1,3 +1,6 @@
+// Optional debug mode for development
+const DEBUG = false;
+
 export function createReportLogger({ mode } = {}) {
 	const entries = [];
 	const label = "Accessibility Framework Report";
@@ -102,17 +105,14 @@ export function createReportLogger({ mode } = {}) {
 			});
 
 			const algorithmNames = Object.keys(groupedResults);
+			if (DEBUG) {
+				console.log("Debug: Raw entries", entries);
+				console.log("Debug: Grouped by algorithm", groupedResults);
+			}
 
-			console.info(`${label} — mode: ${mode}`);
-			console.info(
-				`${bucketMeta.one.label}: ${bucketMeta.one.description}`
-			);
-			console.info(
-				`${bucketMeta.two.label}: ${bucketMeta.two.description}`
-			);
 
 			console.groupCollapsed(
-				`${label} — ${entries.length} result(s) (mode: ${mode})`
+				`${label} — ${algorithmNames.length} algorithm(s) (mode: ${mode})`
 			);
 
 			// Log each algorithm with its bucket results
@@ -123,8 +123,10 @@ export function createReportLogger({ mode } = {}) {
 				algorithmResults.forEach((entry) => {
 					const severity = getSeverityLabel(entry);
 					const bucketLabel = entry.bucket.toUpperCase();
+					const displayAction =
+						entry.elementsAffected === 0 ? "no issues" : entry.action;
 					console.log(
-						`Bucket ${bucketLabel} | Severity: ${severity} | Action: ${entry.action} | Elements: ${entry.elementsAffected}`
+						`Bucket ${bucketLabel} | Severity: ${severity} | Action: ${displayAction} | Elements: ${entry.elementsAffected}`
 					);
 				});
 
@@ -133,17 +135,18 @@ export function createReportLogger({ mode } = {}) {
 
 			// Summary table
 			console.table(
-				entries.map((entry) => ({
-					algorithm: entry.algorithm,
-					severity: getSeverityLabel(entry),
-					bucket: entry.bucket,
-					bucketLabel: getBucketMeta(entry.bucket).label,
-					bucketDescription: getBucketMeta(entry.bucket).description,
-					whatThisMeans: getIssueMeaning(entry),
-					action: entry.action,
-					mode: entry.mode ?? mode,
-					elementsAffected: entry.elementsAffected,
-				}))
+				entries.map((entry) => {
+					const displayAction =
+						entry.elementsAffected === 0 ? "no issues" : entry.action;
+					return {
+						algorithm: entry.algorithm,
+						severity: getSeverityLabel(entry),
+						bucket: entry.bucket,
+						action: displayAction,
+						mode: entry.mode ?? mode,
+						elementsAffected: entry.elementsAffected,
+					};
+				})
 			);
 			console.groupEnd();
 		},
