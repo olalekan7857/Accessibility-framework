@@ -22,6 +22,7 @@ export function resolveFrameworkConfig(options = {}) {
 	const documentNode = options.document ?? globalThis.document;
 	const windowObject = options.window ?? globalThis.window;
 	const root = options.root ?? null;
+	const motion = options.motion ?? "auto";
 
 	if (!documentNode || !windowObject) {
 		throw new Error(
@@ -34,5 +35,6 @@ export function resolveFrameworkConfig(options = {}) {
 		document: documentNode,
 		window: windowObject,
 		root,
+		motion,
 	};
 }
