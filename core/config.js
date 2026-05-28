@@ -23,6 +23,7 @@ export function resolveFrameworkConfig(options = {}) {
 	const windowObject = options.window ?? globalThis.window;
 	const root = options.root ?? null;
 	const motion = options.motion ?? "auto";
+	const highContrast = options.highContrast ?? "auto";
 
 	if (!documentNode || !windowObject) {
 		throw new Error(
@@ -36,5 +37,6 @@ export function resolveFrameworkConfig(options = {}) {
 		window: windowObject,
 		root,
 		motion,
+		highContrast,
 	};
 }

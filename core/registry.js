@@ -3,9 +3,12 @@ import skipNavigationAlgorithm from "../algorithms/navigation/skipNav.js";
 import navigationOrderAlgorithm from "../algorithms/navigation/navigationOrder.js";
 import motionReductionAlgorithm from "../algorithms/navigation/motionReduction.js";
 import textSpacingAlgorithm from "../algorithms/visual/textSpacing.js";
+import highContrastAlgorithm from "../algorithms/visual/highContrast.js";
 import languageDeclarationAlgorithm from "../algorithms/semantic/language.js";
+import headingStructureAlgorithm from "../algorithms/semantic/headings.js";
 import altTextAlgorithm from "../algorithms/semantic/altText.js";
 import formLabelsAlgorithm from "../algorithms/semantic/formLabels.js";
+import formErrorsAlgorithm from "../algorithms/semantic/formErrors.js";
 import roleLabelValidationAlgorithm from "../algorithms/semantic/buttonLinkText.js";
 
 const registry = [
@@ -14,9 +17,12 @@ const registry = [
 	navigationOrderAlgorithm,
 	motionReductionAlgorithm,
 	textSpacingAlgorithm,
+	highContrastAlgorithm,
 	languageDeclarationAlgorithm,
+	headingStructureAlgorithm,
 	altTextAlgorithm,
 	formLabelsAlgorithm,
+	formErrorsAlgorithm,
 	roleLabelValidationAlgorithm,
 ];
 

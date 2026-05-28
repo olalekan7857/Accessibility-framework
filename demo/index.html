@@ -57,6 +57,26 @@
       </div>
     </section>
 
+    <!-- High Contrast Mode demo -->
+    <section class="high-contrast-demo">
+      <h2 class="section-title"><i class="fas fa-adjust"></i> High Contrast Demo</h2>
+      <p class="low-contrast-text" style="color:#9aa1a8; background:#f8fafc; padding:12px; border-radius:8px;">
+        This paragraph is intentionally low contrast to demonstrate how the high-contrast mode improves readability.
+      </p>
+      <div class="demo-actions">
+        <a href="#demo" class="demo-link" style="color:#9aa1a8; text-decoration:none;">Read more details</a>
+        <button type="button" class="demo-button" style="background:#f8fafc; color:#9aa1a8; border:1px solid #e2e8f0;">Demo Button</button>
+      </div>
+      <div class="demo-input">
+        <label for="hc-input">Demo input</label>
+        <input id="hc-input" type="text" placeholder="Type here" style="border:1px solid #e2e8f0; color:#9aa1a8; background:#ffffff;">
+      </div>
+      <div class="hc-card" style="margin-top:16px; padding:16px; border:1px solid #e2e8f0; border-radius:10px; background:#ffffff; color:#9aa1a8;">
+        <h3>Demo card</h3>
+        <p>Cards and containers should remain readable without changing layout structure.</p>
+      </div>
+    </section>
+
     <!-- Form: missing labels (#11), visual-only errors (#13) -->
     <section class="form-section">
       <h2 class="section-title"><i class="fas fa-paper-plane"></i> Stay updated</h2>
@@ -81,16 +101,103 @@
       </form>
     </section>
     
+    <!-- Form Error Accessibility demo -->
+    <section class="form-section form-error-demo">
+      <h2 class="section-title"><i class="fas fa-triangle-exclamation"></i> Form Error Demo</h2>
+      <form id="formErrorDemo" class="newsletter-form" novalidate>
+        <div class="input-group">
+          <label for="demo-name">Full name</label>
+          <input type="text" id="demo-name" name="demo-name" class="form-control">
+          <div class="error">Full name is required.</div>
+        </div>
 
-    <section>
-      <button tabindex="3">Bad Order 1</button>
-      <button tabindex="1">Bad Order 2</button>
-      <button tabindex="2">Bad Order 3</button>
+        <div class="input-group">
+          <label for="demo-email">Email</label>
+          <input type="email" id="demo-email" name="demo-email" class="form-control">
+          <div id="demo-email-error" class="validation-error" aria-live="polite">
+            Please enter a valid email address.
+          </div>
+        </div>
 
-      <a href="#" tabindex="5">Bad Link</a>
+        <div class="input-group">
+          <label for="demo-zip">ZIP code</label>
+          <input type="text" id="demo-zip" name="demo-zip" class="form-control invalid">
+          <small class="helper-text">5 digits only.</small>
+        </div>
 
-      <button>Normal Button</button>
+        <div class="input-group error-wrapper">
+          <label for="demo-city">City</label>
+          <div class="input-inner">
+            <input type="text" id="demo-city" name="demo-city" class="form-control">
+          </div>
+          <p class="field-error">City is required.</p>
+        </div>
+
+        <div class="input-group">
+          <label for="demo-notes">Notes</label>
+          <textarea id="demo-notes" name="demo-notes" class="form-control" aria-invalid="true"></textarea>
+          <div class="validation-hint">Add any extra context (optional).</div>
+        </div>
+      </form>
     </section>
+
+    <!-- Targeted Form Error Accessibility cases -->
+    <section class="form-error-demo">
+      <h2 class="section-title"><i class="fas fa-vial"></i> Form Error Demo: Targeted Cases</h2>
+
+      <!-- Case 1 — Auto-fix (Bucket One) -->
+      <label for="username">Username</label>
+      <input id="username">
+      <div class="error">
+        Username is required
+      </div>
+
+      <!-- Case 2 — Existing live region preserved -->
+      <label for="email2">Email</label>
+      <input id="email2">
+      <div id="email2-error" aria-live="polite">
+        Invalid email address
+      </div>
+
+      <!-- Case 3 — Report only -->
+      <label for="notes2">Notes</label>
+      <input id="notes2" aria-invalid="true">
+
+      <!-- Case 4 — Hidden error ignored -->
+      <label for="phone">Phone</label>
+      <input id="phone">
+      <div class="error" style="display:none">
+        Invalid phone
+      </div>
+    </section>
+    
+
+<section class="heading-demo">
+
+  <!-- Valid -->
+  <h1>Main Page Title</h1>
+
+  <h2>Features</h2>
+  <h3>Accessibility Module</h3>
+
+  <!-- Skipped Level -->
+  <h1>Another Top Title</h1>
+  <h3>Skipped From H1 to H3</h3>
+
+  <!-- Empty Heading -->
+  <h2>     </h2>
+
+  <!-- Icon-only heading -->
+  <h4><i class="fas fa-star"></i></h4>
+
+  <!-- Hidden (should be ignored) -->
+  <h2 style="display:none;">Invisible Heading</h2>
+
+  <!-- Another valid branch -->
+  <h2>Contact Section</h2>
+  <h3>Support Channels</h3>
+
+</section>
   </main>
 
   <footer class="site-footer">
