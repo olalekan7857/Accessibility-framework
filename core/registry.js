@@ -2,6 +2,7 @@ import focusVisibilityAlgorithm from "../algorithms/navigation/focusVisibility.j
 import skipNavigationAlgorithm from "../algorithms/navigation/skipNav.js";
 import navigationOrderAlgorithm from "../algorithms/navigation/navigationOrder.js";
 import motionReductionAlgorithm from "../algorithms/navigation/motionReduction.js";
+import contrastAlgorithm from "../algorithms/visual/contrast.js";
 import textSpacingAlgorithm from "../algorithms/visual/textSpacing.js";
 import highContrastAlgorithm from "../algorithms/visual/highContrast.js";
 import languageDeclarationAlgorithm from "../algorithms/semantic/language.js";
@@ -16,6 +17,7 @@ const registry = [
 	skipNavigationAlgorithm,
 	navigationOrderAlgorithm,
 	motionReductionAlgorithm,
+	contrastAlgorithm,
 	textSpacingAlgorithm,
 	highContrastAlgorithm,
 	languageDeclarationAlgorithm,

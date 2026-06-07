@@ -146,6 +146,32 @@ function colorsEqual(a, b) {
 	return Math.abs(a.r - b.r) < 3 && Math.abs(a.g - b.g) < 3 && Math.abs(a.b - b.b) < 3;
 }
 
+function isBrandProtected(element) {
+	if (!element) return false;
+	
+	if (element.hasAttribute && element.hasAttribute("data-brand")) {
+		return true;
+	}
+
+	if (element.classList) {
+		for (let i = 0; i < element.classList.length; i++) {
+			const cls = String(element.classList[i]).toLowerCase();
+			if (cls.includes("brand") || cls.includes("logo")) {
+				return true;
+			}
+		}
+	}
+
+	if (element.style && element.style.cssText) {
+		const inlineStyles = String(element.style.cssText).toLowerCase();
+		if (inlineStyles.includes("--brand") || inlineStyles.includes("--logo")) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 function addClassIfNeeded(element, className) {
 	if (!element?.classList || element.classList.contains(className)) {
 		return 0;
@@ -233,7 +259,7 @@ function isHighContrastActive(documentNode) {
 
 function applyHighContrast(documentNode, windowObject) {
 	if (!documentNode) {
-		return 0;
+		return { total: 0, text: 0, links: 0, buttons: 0, controls: 0, containers: 0 };
 	}
 
 	injectStyleOnce(HIGH_CONTRAST_STYLE_ID, HIGH_CONTRAST_CSS, documentNode);
@@ -243,25 +269,31 @@ function applyHighContrast(documentNode, windowObject) {
 	const target = root?.classList ? root : body;
 
 	if (!target?.classList) {
-		return 0;
+		return { total: 0, text: 0, links: 0, buttons: 0, controls: 0, containers: 0 };
 	}
 
-	let elementsAffected = 0;
+	const metrics = { total: 0, text: 0, links: 0, buttons: 0, controls: 0, containers: 0 };
+
 	if (!target.classList.contains(HIGH_CONTRAST_CLASS)) {
 		target.classList.add(HIGH_CONTRAST_CLASS);
-		elementsAffected += 1;
+		metrics.total += 1;
 	}
 
 	const doc = documentNode;
 	const win = windowObject ?? doc.defaultView ?? globalThis.window;
 	const safeWindow = win?.getComputedStyle ? win : null;
-	if (!safeWindow) return elementsAffected;
+	if (!safeWindow) return metrics;
 
 	const surfaces = [doc.body, doc.querySelector("main")].filter(Boolean);
 	surfaces.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		if (shouldEnhanceSurface(styles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_SURFACE);
+			const added = addClassIfNeeded(element, CLASS_SURFACE);
+			if (added) {
+				metrics.containers += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
@@ -269,20 +301,30 @@ function applyHighContrast(documentNode, windowObject) {
 		doc.querySelectorAll("p, li, blockquote, dd, dt, .low-contrast-text")
 	).slice(0, MAX_SCAN_PER_GROUP);
 	textBlocks.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		if (shouldEnhanceText(element, styles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_TEXT);
+			const added = addClassIfNeeded(element, CLASS_TEXT);
+			if (added) {
+				metrics.text += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
 	const links = Array.from(doc.querySelectorAll("a")).slice(0, MAX_SCAN_PER_GROUP);
 	links.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		const parentStyles = element.parentElement
 			? safeWindow.getComputedStyle(element.parentElement)
 			: null;
 		if (shouldEnhanceLink(element, styles, parentStyles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_LINK);
+			const added = addClassIfNeeded(element, CLASS_LINK);
+			if (added) {
+				metrics.links += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
@@ -292,9 +334,14 @@ function applyHighContrast(documentNode, windowObject) {
 		)
 	).slice(0, MAX_SCAN_PER_GROUP);
 	buttons.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		if (shouldEnhanceButton(styles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_BUTTON);
+			const added = addClassIfNeeded(element, CLASS_BUTTON);
+			if (added) {
+				metrics.buttons += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
@@ -302,9 +349,14 @@ function applyHighContrast(documentNode, windowObject) {
 		doc.querySelectorAll("input, select, textarea")
 	).slice(0, MAX_SCAN_PER_GROUP);
 	controls.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		if (shouldEnhanceControl(styles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_CONTROL);
+			const added = addClassIfNeeded(element, CLASS_CONTROL);
+			if (added) {
+				metrics.controls += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
@@ -314,13 +366,18 @@ function applyHighContrast(documentNode, windowObject) {
 		)
 	).slice(0, MAX_SCAN_PER_GROUP);
 	cards.forEach((element) => {
+		if (isBrandProtected(element)) return;
 		const styles = safeWindow.getComputedStyle(element);
 		if (shouldEnhanceCard(styles)) {
-			elementsAffected += addClassIfNeeded(element, CLASS_CARD);
+			const added = addClassIfNeeded(element, CLASS_CARD);
+			if (added) {
+				metrics.containers += 1;
+				metrics.total += 1;
+			}
 		}
 	});
 
-	return elementsAffected;
+	return metrics;
 }
 
 export function runHighContrastAlgorithm({
@@ -341,25 +398,22 @@ export function runHighContrastAlgorithm({
 		"High contrast mode provides a deterministic accessibility theme that strengthens visibility without changing layout.";
 
 	if (!isActive && shouldApply) {
-		elementsAffected = applyHighContrast(documentNode, windowObject);
+		const metrics = applyHighContrast(documentNode, windowObject);
+		elementsAffected = metrics.total;
 		action = "applied";
-		whatThisMeans =
-			"High contrast accessibility theme activated.";
+		whatThisMeans = `High contrast accessibility theme activated. Enhanced ${metrics.total} elements (${metrics.text} text blocks, ${metrics.links} links, ${metrics.buttons} buttons, ${metrics.controls} inputs, ${metrics.containers} containers).`;
 	} else if (!isActive && isExplicitOff) {
 		action = "no issues";
 		elementsAffected = 0;
-		whatThisMeans =
-			"High contrast enhancement is disabled by configuration.";
+		whatThisMeans = "High contrast enhancement is disabled by configuration.";
 	} else if (!isActive && !shouldApply) {
 		action = "reported";
 		elementsAffected = 1;
-		whatThisMeans =
-			"High contrast enhancement available but not applied in audit mode.";
+		whatThisMeans = "High contrast enhancement available but not applied in audit mode.";
 	} else if (isActive) {
 		action = "no issues";
 		elementsAffected = 0;
-		whatThisMeans =
-			"High contrast mode already present; no duplicate enhancement applied.";
+		whatThisMeans = "High contrast mode already present; no duplicate enhancement applied.";
 	}
 
 	return {
