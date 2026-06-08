@@ -5,6 +5,7 @@ import motionReductionAlgorithm from "../algorithms/navigation/motionReduction.j
 import contrastAlgorithm from "../algorithms/visual/contrast.js";
 import textSpacingAlgorithm from "../algorithms/visual/textSpacing.js";
 import highContrastAlgorithm from "../algorithms/visual/highContrast.js";
+import textScalingAlgorithm from "../algorithms/visual/textScaling.js";
 import languageDeclarationAlgorithm from "../algorithms/semantic/language.js";
 import headingStructureAlgorithm from "../algorithms/semantic/headings.js";
 import altTextAlgorithm from "../algorithms/semantic/altText.js";
@@ -20,6 +21,7 @@ const registry = [
 	contrastAlgorithm,
 	textSpacingAlgorithm,
 	highContrastAlgorithm,
+	textScalingAlgorithm,
 	languageDeclarationAlgorithm,
 	headingStructureAlgorithm,
 	altTextAlgorithm,
