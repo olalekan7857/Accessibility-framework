@@ -57,21 +57,21 @@
       </div>
     </section>
 
-    <!-- Contrast Evaluation Demo -->
-    <section class="contrast-demo">
-      <h2 class="section-title"><i class="fas fa-eye-dropper"></i> Contrast Evaluation Demo</h2>
-      <p style="color: #bbbbbb; background-color: #ffffff;">1. Low contrast paragraph.</p>
-      <a href="#" style="color: #66ccff; background-color: #ffffff; text-decoration: underline;">2. Low contrast link</a>
+    <!-- Contrast Evaluation Demo (Algorithm 13 — report only, bucket two) -->
+    <section class="contrast-demo" aria-labelledby="contrast-demo-title">
+      <h2 id="contrast-demo-title" class="section-title"><i class="fas fa-eye-dropper"></i> Contrast Evaluation Demo</h2>
+      <p class="hero-description" style="color: #bbbbbb; background-color: #ffffff;">1. Low contrast paragraph.</p>
+      <a href="#" class="footer-link" style="color: #66ccff; background-color: #ffffff; text-decoration: underline;">2. Low contrast link</a>
       <div style="margin-top: 10px;">
-        <button style="background-color: #dddddd; color: #ffffff; border: none; padding: 5px 10px;">3. Low contrast button</button>
+        <button type="button" class="subscribe" style="background-color: #dddddd; color: #ffffff; border: none; padding: 5px 10px;">3. Low contrast button</button>
       </div>
       <div style="margin-top: 10px;">
-        <input placeholder="4. Low contrast placeholder" style="color: #000000; background-color: #ffffff;" class="low-placeholder">
+        <input type="text" placeholder="4. Low contrast placeholder" style="color: #000000; background-color: #ffffff;" class="low-placeholder" aria-label="Low contrast placeholder demo">
         <style>
           .low-placeholder::placeholder { color: #eeeeee; }
         </style>
       </div>
-      <p style="color: #000000; background-color: #ffffff; margin-top: 10px;">5. Good contrast text.</p>
+      <p class="good-contrast" style="color: #000000; background-color: #ffffff; margin-top: 10px;">5. Good contrast text.</p>
     </section>
 
     <!-- High Contrast Mode demo -->
