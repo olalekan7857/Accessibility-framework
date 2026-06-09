@@ -343,8 +343,90 @@ function collectFixedPixelElements(scope, windowObject) {
 	return fixedPixelElements;
 }
 
+// function collectExcludedElements(scope, windowObject) {
+// 	const candidates = Array.from(scope.querySelectorAll(TARGET_SELECTOR)).slice(0, MAX_SCAN);
+// 	const excludedElements = [];
+// 	const seenElements = new WeakSet();
+
+// 	const exclusionReasons = {
+// 		brandLogo: [],
+// 		svgCanvas: [],
+// 		iconOnly: [],
+// 		iconFont: [],
+// 		noText: [],
+// 		alreadyScalable: [],
+// 		tinyText: [],
+// 		browserManaged: [],
+// 	};
+
+// 	for (let index = 0; index < candidates.length; index += 1) {
+// 		const element = candidates[index];
+
+// 		if (seenElements.has(element)) {
+// 			continue;
+// 		}
+
+// 		if (isElementHidden(element, windowObject)) {
+// 			continue;
+// 		}
+
+// 		let reason = null;
+
+// 		if (isInsideIgnoredContainer(element)) {
+// 			reason = "svgCanvas";
+// 		} else if (isBrandOrLogoElement(element)) {
+// 			reason = "brandLogo";
+// 		} else if (isIconFontElement(element)) {
+// 			reason = "iconFont";
+// 		} else if (!hasReadableText(element)) {
+// 			reason = "noText";
+// 		} else if (isIconOnlyElement(element)) {
+// 			reason = "iconOnly";
+// 		} else if (hasInlineScalableFontSize(element)) {
+// 			reason = "alreadyScalable";
+// 		} else if (isFormControl(element) && isBrowserManagedFontSize(styles?.fontSize)) {
+// 			reason = "browserManaged";
+// 		} else {
+// 			let styles;
+// 			try {
+// 				styles = windowObject.getComputedStyle(element);
+// 			} catch (error) {
+// 				continue;
+// 			}
+
+// 			if (!styles) {
+// 				continue;
+// 			}
+
+// 			if (isAlreadyScalable(styles.fontSize)) {
+// 				reason = "alreadyScalable";
+// 			} else {
+// 				const pxSize = parsePxFontSize(styles.fontSize);
+// 				if (pxSize !== null && pxSize < MIN_FONT_SIZE_PX) {
+// 					reason = "tinyText";
+// 				}
+// 			}
+// 		}
+
+// 		if (reason) {
+// 			seenElements.add(element);
+// 			excludedElements.push({
+// 				element,
+// 				reason,
+// 				label: formatElementLabel(element),
+// 			});
+// 			exclusionReasons[reason].push(element);
+// 		}
+// 	}
+
+// 	return { excludedElements, exclusionReasons };
+// }
+
 function collectExcludedElements(scope, windowObject) {
-	const candidates = Array.from(scope.querySelectorAll(TARGET_SELECTOR)).slice(0, MAX_SCAN);
+	const candidates = Array.from(
+		scope.querySelectorAll(TARGET_SELECTOR)
+	).slice(0, MAX_SCAN);
+
 	const excludedElements = [];
 	const seenElements = new WeakSet();
 
@@ -370,6 +452,18 @@ function collectExcludedElements(scope, windowObject) {
 			continue;
 		}
 
+		let styles;
+
+		try {
+			styles = windowObject.getComputedStyle(element);
+		} catch (error) {
+			continue;
+		}
+
+		if (!styles) {
+			continue;
+		}
+
 		let reason = null;
 
 		if (isInsideIgnoredContainer(element)) {
@@ -384,42 +478,40 @@ function collectExcludedElements(scope, windowObject) {
 			reason = "iconOnly";
 		} else if (hasInlineScalableFontSize(element)) {
 			reason = "alreadyScalable";
-		} else if (isFormControl(element) && isBrowserManagedFontSize(styles?.fontSize)) {
+		} else if (
+			isFormControl(element) &&
+			isBrowserManagedFontSize(styles.fontSize)
+		) {
 			reason = "browserManaged";
+		} else if (isAlreadyScalable(styles.fontSize)) {
+			reason = "alreadyScalable";
 		} else {
-			let styles;
-			try {
-				styles = windowObject.getComputedStyle(element);
-			} catch (error) {
-				continue;
-			}
+			const pxSize = parsePxFontSize(styles.fontSize);
 
-			if (!styles) {
-				continue;
-			}
-
-			if (isAlreadyScalable(styles.fontSize)) {
-				reason = "alreadyScalable";
-			} else {
-				const pxSize = parsePxFontSize(styles.fontSize);
-				if (pxSize !== null && pxSize < MIN_FONT_SIZE_PX) {
-					reason = "tinyText";
-				}
+			if (pxSize !== null && pxSize < MIN_FONT_SIZE_PX) {
+				reason = "tinyText";
 			}
 		}
 
 		if (reason) {
 			seenElements.add(element);
+
 			excludedElements.push({
 				element,
 				reason,
 				label: formatElementLabel(element),
 			});
-			exclusionReasons[reason].push(element);
+
+			if (exclusionReasons[reason]) {
+				exclusionReasons[reason].push(element);
+			}
 		}
 	}
 
-	return { excludedElements, exclusionReasons };
+	return {
+		excludedElements,
+		exclusionReasons,
+	};
 }
 
 export function runTextScalingAlgorithm({
