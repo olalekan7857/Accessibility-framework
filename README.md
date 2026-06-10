@@ -1,4 +1,4 @@
-# A11yCore - Accessibility Enhancement Framework
+# Accessibility Enhancement Framework
 
 A modular, rule-based accessibility enhancement framework for web applications. This framework automatically detects and remediates common accessibility issues using deterministic algorithms without requiring AI or machine learning.
 
